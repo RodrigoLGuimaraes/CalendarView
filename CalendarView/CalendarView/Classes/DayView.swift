@@ -56,6 +56,7 @@ class DayView: UIView {
     
     self.dateLabel.layer.cornerRadius = 4
     self.dateLabel.clipsToBounds = true
+    self.dateLabel.layer.borderWidth = 2
     
     let tap = UITapGestureRecognizer(target: self, action: #selector(selectIt))
     addGestureRecognizer(tap)
@@ -93,12 +94,18 @@ class DayView: UIView {
 
   func updateView() {
     DispatchQueue.main.async {
+        if self.isToday {
+            self.dateLabel.layer.borderColor = CalendarView.todayBorderColor.cgColor
+        } else {
+            self.dateLabel.layer.borderColor = UIColor.clear.cgColor
+        }
         if self.selected {
             self.dateLabel.textColor = CalendarView.daySelectedTextColor
             self.dateLabel.backgroundColor = CalendarView.daySelectedBackgroundColor
         } else if self.isToday {
             self.dateLabel.textColor = CalendarView.todayTextColor
             self.dateLabel.backgroundColor = CalendarView.todayBackgroundColor
+            
         } else if self.isOtherMonth {
             self.dateLabel.textColor = CalendarView.otherMonthTextColor
             self.dateLabel.backgroundColor = CalendarView.otherMonthBackgroundColor

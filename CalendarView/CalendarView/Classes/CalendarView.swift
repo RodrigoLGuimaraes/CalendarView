@@ -22,6 +22,7 @@ public class CalendarView: UIView {
     static var daySelectedBackgroundColor = UIColor.orange
     static var todayBackgroundColor = UIColor.lightGray
     static var todayTextColor = UIColor.black
+    static var todayBorderColor = UIColor.black
     static var dayTextColor = UIColor.black
     static var daySelectedTextColor = UIColor.white
     static var otherMonthTextColor = UIColor.lightGray
@@ -46,6 +47,10 @@ public class CalendarView: UIView {
     get { return Appearance.todayTextColor }
     set { Appearance.todayTextColor = newValue }
   }
+    public class var todayBorderColor: UIColor {
+        get { return Appearance.todayBorderColor }
+        set { Appearance.todayBorderColor = newValue }
+    }
   public class var dayTextColor: UIColor {
     get { return Appearance.dayTextColor }
     set { Appearance.dayTextColor = newValue }

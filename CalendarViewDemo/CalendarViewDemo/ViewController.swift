@@ -28,7 +28,7 @@ class ViewController: UIViewController {
     calendar.selectedDayOnPaged = nil
     calendar.selectionEnabled = false
     calendar.isDateSelected = { date in
-        return !date.isToday()
+        return true
         
     }
     calendar.delegate = self
