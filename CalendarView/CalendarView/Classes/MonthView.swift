@@ -50,6 +50,12 @@ class MonthView: UIView {
     WeekLabel(day: MonthView.weekdayNameFrom(4)),
     WeekLabel(day: MonthView.weekdayNameFrom(5)),
   ]
+    
+    var selectionEnabled: Bool = true {
+        didSet {
+            self.weeks.forEach { $0.selectionEnabled = self.selectionEnabled }
+        }
+    }
 
   // these values are expensive to compute so cache them
   var numDays: Int = 30

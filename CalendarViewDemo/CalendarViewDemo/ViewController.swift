@@ -26,6 +26,7 @@ class ViewController: UIViewController {
     super.viewDidLoad()
     date = moment()
     calendar.selectedDayOnPaged = nil
+    calendar.selectionEnabled = false
     calendar.delegate = self
   }
 

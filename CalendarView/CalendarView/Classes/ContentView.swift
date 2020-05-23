@@ -17,6 +17,12 @@ class ContentView: UIScrollView {
   var months: [MonthView] = []
   var selectedDate: Moment?
   var paged = false
+    
+    var selectionEnabled: Bool = true {
+        didSet {
+            self.months.forEach { $0.selectionEnabled = self.selectionEnabled }
+        }
+    }
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)

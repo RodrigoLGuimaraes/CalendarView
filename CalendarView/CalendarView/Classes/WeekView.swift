@@ -19,6 +19,12 @@ class WeekView: UIView {
   }
   var days: [DayView] = []
   var month: Moment!
+    
+    var selectionEnabled: Bool = true {
+        didSet {
+            self.days.forEach { $0.selectionEnabled = self.selectionEnabled }
+        }
+    }
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)

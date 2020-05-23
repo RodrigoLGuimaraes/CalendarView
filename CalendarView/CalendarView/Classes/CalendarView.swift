@@ -71,6 +71,12 @@ public class CalendarView: UIView {
     set { Appearance.dayFont = newValue }
   }
 
+    public var selectionEnabled: Bool = true {
+        didSet {
+            self.contentView.selectionEnabled = self.selectionEnabled
+        }
+    }
+    
   lazy var contentView: ContentView = {
     let cv = ContentView(frame: CGRect.zero)
     cv.delegate = self

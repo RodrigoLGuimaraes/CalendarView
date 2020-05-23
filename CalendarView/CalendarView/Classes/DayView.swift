@@ -20,6 +20,9 @@ class DayView: UIView {
       setNeedsLayout()
     }
   }
+    
+    var selectionEnabled: Bool = true
+    
   lazy var dateLabel: UILabel = {
     let label = UILabel()
     label.textAlignment = .center
@@ -91,6 +94,7 @@ class DayView: UIView {
   }
 
   @objc func selectIt() {
+    guard self.selectionEnabled else { return }
     selected = true
   }
 
