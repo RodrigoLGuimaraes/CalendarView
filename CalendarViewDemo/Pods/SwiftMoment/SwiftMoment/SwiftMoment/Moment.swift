@@ -12,11 +12,11 @@
 import Foundation
 
 /**
-Returns a moment representing the current instant in time
-at the current timezone.
-
-- returns: A Moment instance.
-*/
+ Returns a moment representing the current instant in time
+ at the current timezone.
+ 
+ - returns: A Moment instance.
+ */
 public func moment(timeZone: TimeZone = TimeZone.current
     , locale: Locale = Locale.autoupdatingCurrent) -> Moment {
     return Moment(timeZone: timeZone, locale: locale)
@@ -28,24 +28,24 @@ public func utc() -> Moment {
 }
 
 /**
-Returns an Optional wrapping a Moment structure, representing the
-current instant in time. If the string passed as parameter cannot be
-parsed by the function, the Optional wraps a nil value.
-
-- parameter stringDate: A string with a date representation.
-- parameter timeZone:   An TimeZone object
-
-- returns: An optional Moment instance.
-*/
+ Returns an Optional wrapping a Moment structure, representing the
+ current instant in time. If the string passed as parameter cannot be
+ parsed by the function, the Optional wraps a nil value.
+ 
+ - parameter stringDate: A string with a date representation.
+ - parameter timeZone:   An TimeZone object
+ 
+ - returns: An optional Moment instance.
+ */
 public func moment(stringDate: String
     , timeZone: TimeZone = TimeZone.current
     , locale: Locale = Locale.autoupdatingCurrent) -> Moment? {
-
+    
     let formatter = DateFormatter()
     formatter.timeZone = timeZone
     formatter.locale = locale
     let isoFormat = "yyyy-MM-ddTHH:mm:ssZ"
-
+    
     // The contents of the array below are borrowed
     // and adapted from the source code of Moment.js
     // https://github.com/moment/moment/blob/develop/moment.js
@@ -70,10 +70,10 @@ public func moment(stringDate: String
         "HH:mm",
         "HH"
     ]
-
+    
     for format in formats {
         formatter.dateFormat = format
-
+        
         if let date = formatter.date(from: stringDate) {
             return Moment(date: date, timeZone: timeZone, locale: locale)
         }
@@ -96,14 +96,14 @@ public func moment(stringDate: String
 }
 
 /**
-Builds a new Moment instance using an array with the following components,
-in the following order: [ year, month, day, hour, minute, second ]
-
-- parameter dateComponents: An array of integer values
-- parameter timeZone:   An TimeZone object
-
-- returns: An optional wrapping a Moment instance
-*/
+ Builds a new Moment instance using an array with the following components,
+ in the following order: [ year, month, day, hour, minute, second ]
+ 
+ - parameter dateComponents: An array of integer values
+ - parameter timeZone:   An TimeZone object
+ 
+ - returns: An optional wrapping a Moment instance
+ */
 public func moment(params: [Int]
     , timeZone: TimeZone = TimeZone.current
     , locale: Locale = Locale.autoupdatingCurrent) -> Moment? {
@@ -230,12 +230,12 @@ public func minimum(moments: Moment...) -> Moment? {
  Instead of modifying the native Date class, this is a
  wrapper for the Date object. To get this wrapper object, simply
  call moment() with one of the supported input types.
-*/
+ */
 public struct Moment: Comparable {
     let date: Date
     let timeZone: TimeZone
     let locale: Locale
-
+    
     init(date: Date = Date()
         , timeZone: TimeZone = TimeZone.current
         , locale: Locale = Locale.autoupdatingCurrent) {
@@ -243,7 +243,7 @@ public struct Moment: Comparable {
         self.timeZone = timeZone
         self.locale = locale
     }
-
+    
     /// Returns the year of the current instance.
     public var year: Int {
         var cal = Calendar.current
@@ -252,7 +252,7 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.year], from: date)
         return components.year!
     }
-
+    
     /// Returns the month (1-12) of the current instance.
     public var month: Int {
         var cal = Calendar.current
@@ -261,14 +261,14 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.month], from: date)
         return components.month!
     }
-
+    
     /// Returns the name of the month of the current instance, in the current locale.
     public var monthName: String {
         let formatter = DateFormatter()
         formatter.locale = locale
         return formatter.monthSymbols[month - 1] 
     }
-
+    
     public var day: Int {
         var cal = Calendar.current
         cal.timeZone = timeZone
@@ -276,7 +276,7 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.day], from: date)
         return components.day!
     }
-
+    
     public var hour: Int {
         var cal = Calendar.current
         cal.timeZone = timeZone
@@ -284,7 +284,7 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.hour], from: date)
         return components.hour!
     }
-
+    
     public var minute: Int {
         var cal = Calendar.current
         cal.timeZone = timeZone
@@ -292,7 +292,7 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.minute], from: date)
         return components.minute!
     }
-
+    
     public var second: Int {
         var cal = Calendar.current
         cal.timeZone = timeZone
@@ -300,7 +300,7 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.second], from: date)
         return components.second!
     }
-
+    
     public var weekday: Int {
         var cal = Calendar.current
         cal.timeZone = timeZone
@@ -308,7 +308,7 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.weekday], from: date)
         return components.weekday!
     }
-
+    
     public var weekdayName: String {
         let formatter = DateFormatter()
         formatter.locale = locale
@@ -316,7 +316,7 @@ public struct Moment: Comparable {
         formatter.timeZone = timeZone
         return formatter.string(from: date)
     }
-
+    
     public var weekdayOrdinal: Int {
         var cal = Calendar.current
         cal.locale = locale
@@ -324,7 +324,7 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.weekdayOrdinal], from: date)
         return components.weekdayOrdinal!
     }
-
+    
     public var weekOfYear: Int {
         var cal = Calendar.current
         cal.locale = locale
@@ -332,7 +332,7 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.weekOfYear], from: date)
         return components.weekOfYear!
     }
-
+    
     public var quarter: Int {
         var cal = Calendar.current
         cal.locale = locale
@@ -340,9 +340,9 @@ public struct Moment: Comparable {
         let components = cal.dateComponents([.quarter], from: date)
         return components.quarter!
     }
-
+    
     // Methods
-
+    
     public func get(unit: TimeUnit) -> Int? {
         switch unit {
         case .Seconds:
@@ -361,14 +361,14 @@ public struct Moment: Comparable {
             return year
         }
     }
-
+    
     public func get(unitName: String) -> Int? {
         if let unit = TimeUnit(rawValue: unitName) {
             return get(unit: unit)
         }
         return nil
     }
-
+    
     public func format(dateFormat: String = "yyyy-MM-dd HH:mm:ss ZZZZ") -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = dateFormat
@@ -376,16 +376,16 @@ public struct Moment: Comparable {
         formatter.locale = locale
         return formatter.string(from: date)
     }
-
+    
     public func isEqualTo(moment: Moment) -> Bool {
         return date == moment.date
     }
-
+    
     public func intervalSince(moment: Moment) -> Duration {
         let interval = date.timeIntervalSince(moment.date)
         return Duration(value: interval)
     }
-
+    
     public func add(value: Int, _ unit: TimeUnit) -> Moment {
         var components = DateComponents()
         switch unit {
@@ -407,55 +407,55 @@ public struct Moment: Comparable {
         let cal = NSCalendar(calendarIdentifier: NSCalendar.Identifier.gregorian)!
         cal.timeZone = TimeZone(abbreviation: "UTC")!
         if let newDate = cal.date(byAdding: components, to: date, options: NSCalendar.Options.init(rawValue: 0)) {
-          return Moment(date: newDate)
+            return Moment(date: newDate)
         }
         return self
     }
-
+    
     public func add(value: TimeInterval, _ unit: TimeUnit) -> Moment {
         let seconds = convert(value: value, unit)
         let interval = TimeInterval(seconds)
         let newDate = date.addingTimeInterval(interval)
         return Moment(date: newDate)
     }
-
+    
     public func add(value: Int, _ unitName: String) -> Moment {
         if let unit = TimeUnit(rawValue: unitName) {
             return add(value: value, unit)
         }
         return self
     }
-
+    
     public func add(duration: Duration) -> Moment {
         return add(value: duration.interval, .Seconds)
     }
-
+    
     public func subtract(value: TimeInterval, _ unit: TimeUnit) -> Moment {
         return add(value: -value, unit)
     }
-
+    
     public func subtract(value: Int, _ unit: TimeUnit) -> Moment {
         return add(value: -value, unit)
     }
-
+    
     public func subtract(value: Int, _ unitName: String) -> Moment {
         if let unit = TimeUnit(rawValue: unitName) {
             return subtract(value: value, unit)
         }
         return self
     }
-
+    
     public func subtract(duration: Duration) -> Moment {
         return subtract(value: duration.interval, .Seconds)
     }
-
+    
     public func isCloseTo(moment: Moment, precision: TimeInterval = 300) -> Bool {
         // "Being close" is measured using a precision argument
         // which is initialized a 300 seconds, or 5 minutes.
         let delta = intervalSince(moment: moment)
         return abs(delta.interval) < precision
     }
-
+    
     public func startOf(unit: TimeUnit) -> Moment {
         let cal = Calendar.current
         var newDate: Date?
@@ -481,31 +481,31 @@ public struct Moment: Comparable {
         newDate = cal.date(from: components)
         return newDate == nil ? self : Moment(date: newDate!)
     }
-
+    
     public func startOf(unitName: String) -> Moment {
         if let unit = TimeUnit(rawValue: unitName) {
             return startOf(unit: unit)
         }
         return self
     }
-
+    
     public func endOf(unit: TimeUnit) -> Moment {
         return startOf(unit: unit).add(value: 1, unit).subtract(duration: 1.seconds)
     }
-
+    
     public func endOf(unitName: String) -> Moment {
         if let unit = TimeUnit(rawValue: unitName) {
             return endOf(unit: unit)
         }
         return self
     }
-
+    
     public func epoch() -> TimeInterval {
         return date.timeIntervalSince1970
     }
-
+    
     // Private methods
-
+    
     func convert(value: Double, _ unit: TimeUnit) -> Double {
         switch unit {
         case .Seconds:

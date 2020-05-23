@@ -10,55 +10,55 @@ import Foundation
 
 public struct Duration: Equatable {
     let interval: TimeInterval
-
+    
     public init(value: TimeInterval) {
         self.interval = value
     }
-
+    
     public init(value: Int) {
         self.interval = TimeInterval(value)
     }
-
+    
     public var years: Double {
         return interval / 31536000 // 365 days
     }
-
+    
     public var quarters: Double {
         return interval / 7776000 // 3 months
     }
-
+    
     public var months: Double {
         return interval / 2592000 // 30 days
     }
-
+    
     public var days: Double {
         return interval / 86400 // 24 hours
     }
-
+    
     public var hours: Double {
         return interval / 3600 // 60 minutes
     }
-
+    
     public var minutes: Double {
         return interval / 60
     }
-
+    
     public var seconds: Double {
         return interval
     }
-
+    
     public func ago() -> Moment {
         return moment().subtract(duration: self)
     }
-
+    
     public func add(duration: Duration) -> Duration {
         return Duration(value: self.interval + duration.interval)
     }
-
+    
     public func subtract(duration: Duration) -> Duration {
         return Duration(value: self.interval - duration.interval)
     }
-
+    
     public func isEqualTo(duration: Duration) -> Bool {
         return self.interval == duration.interval
     }
@@ -70,7 +70,7 @@ extension Duration: CustomStringConvertible {
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.calendar?.timeZone = TimeZone(abbreviation: "UTC")!
         formatter.allowedUnits = [.year, .month, .weekOfMonth, .day, .hour, .minute, .second]
-
+        
         let referenceDate = Date(timeIntervalSinceReferenceDate: 0)
         let intervalDate = Date(timeInterval: self.interval, since: referenceDate)
         return formatter.string(from: referenceDate, to: intervalDate)!
