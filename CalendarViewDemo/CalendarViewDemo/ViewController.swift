@@ -17,7 +17,7 @@ class ViewController: UIViewController {
   var date: Moment! {
     didSet {
         DispatchQueue.main.async {
-            self.title = self.date.format(dateFormat: "MMMM d, yyyy")
+            self.title = self.date.format(dateFormat: "MMMM")
         }
     }
   }
@@ -25,6 +25,7 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     date = moment()
+    calendar.selectedDayOnPaged = nil
     calendar.delegate = self
   }
 

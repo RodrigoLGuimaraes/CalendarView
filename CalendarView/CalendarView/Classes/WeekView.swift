@@ -60,11 +60,13 @@ class WeekView: UIView {
     if days.count > 0 {
       for i in 0..<days.count {
         let day = days[i]
-        let dayDate = date.add(i, .Days)
+        day.selected = false
+        guard let dayDate = date?.add(value: i, TimeUnit.Days) else {
+            continue
+        }
+        day.date = dayDate
         day.isToday = dayDate.isToday()
         day.isOtherMonth = !month.isSameMonth(other: dayDate)
-        day.selected = false
-        day.date = dayDate
       }
     }
   }

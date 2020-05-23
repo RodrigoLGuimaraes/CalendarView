@@ -111,7 +111,7 @@ public class CalendarView: UIView {
   func setup() {
     if let date = contentView.selectedDate {
         contentView.selectVisibleDate(date: date.day)
-        delegate?.calendarDidSelectDate(date: moment(date))
+        delegate?.calendarDidSelectDate(date: moment(moment: date))
       contentView.selectedDate = nil
     }
   }
@@ -124,7 +124,7 @@ public class CalendarView: UIView {
 
   @objc func dateSelected(notification: NSNotification) {
     if let date = notification.object as? Date {
-        delegate?.calendarDidSelectDate(date: moment(date))
+        delegate?.calendarDidSelectDate(date: moment(date: date))
     }
   }
 

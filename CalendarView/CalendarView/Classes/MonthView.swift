@@ -16,23 +16,39 @@ class MonthView: UIView {
 
   var date: Moment! {
     didSet {
-      startsOn = date.startOf(.Months).weekday // Sun is 1
-      let numDays = Double(date.endOf(.Months).day + startsOn - 1)
+        startsOn = date.startOf(unit: .Months).weekday // Sun is 1
+        let numDays = Double(date.endOf(unit: .Months).day + startsOn - 1)
       self.numDays = Int(ceil(numDays / 7.0) * 7)
       self.numDays = 42 // TODO: add option to always show 6 weeks
       setWeeks()
     }
   }
 
+    fileprivate static func weekdayNameFrom(_ weekdayNumber: Int) -> String {
+        var calendar = Locale.current.calendar
+        if let lang = Locale.preferredLanguages.first {
+            calendar = Locale(identifier: lang).calendar
+        }
+        let weekdaySymbols = calendar.weekdaySymbols
+        let index = (weekdayNumber + calendar.firstWeekday - 1) % 7
+        let uppercased = weekdaySymbols[index].uppercased()
+        
+        if uppercased.count <= 3 { return uppercased }
+        
+        let stringIndex = uppercased.index(uppercased.startIndex, offsetBy: 2)
+        let firstThree = uppercased[...stringIndex]
+        return String(firstThree)
+    }
+    
   var weeks: [WeekView] = []
   var weekLabels: [WeekLabel] = [
-    WeekLabel(day: "SUN"),
-    WeekLabel(day: "MON"),
-    WeekLabel(day: "TUE"),
-    WeekLabel(day: "WED"),
-    WeekLabel(day: "THU"),
-    WeekLabel(day: "FRI"),
-    WeekLabel(day: "SAT"),
+    WeekLabel(day: MonthView.weekdayNameFrom(6)),
+    WeekLabel(day: MonthView.weekdayNameFrom(0)),
+    WeekLabel(day: MonthView.weekdayNameFrom(1)),
+    WeekLabel(day: MonthView.weekdayNameFrom(2)),
+    WeekLabel(day: MonthView.weekdayNameFrom(3)),
+    WeekLabel(day: MonthView.weekdayNameFrom(4)),
+    WeekLabel(day: MonthView.weekdayNameFrom(5)),
   ]
 
   // these values are expensive to compute so cache them
@@ -88,9 +104,9 @@ class MonthView: UIView {
   func setWeeks() {
     if weeks.count > 0 {
       let numWeeks = Int(numDays / 7)
-      let firstVisibleDate  = date.startOf(.Months).endOf(.Days).subtract(startsOn - 1, .Days).startOf(.Days)
+        let firstVisibleDate  = date.startOf(unit: .Months).endOf(unit: .Days).subtract(value: startsOn - 1, .Days).startOf(unit: .Days)
       for i in 1...weeks.count {
-        let firstDateOfWeek = firstVisibleDate.add(7*(i-1), .Days)
+        let firstDateOfWeek = firstVisibleDate.add(value: 7*(i-1), .Days)
         let week = weeks[i - 1]
         week.month = date
         week.date = firstDateOfWeek

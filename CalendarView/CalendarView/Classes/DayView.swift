@@ -16,7 +16,7 @@ class DayView: UIView {
 
   var date: Moment! {
     didSet {
-      dateLabel.text = date.format("d")
+        dateLabel.text = date.format(dateFormat: "d")
       setNeedsLayout()
     }
   }
@@ -65,7 +65,7 @@ class DayView: UIView {
 
   @objc func onSelected(notification: NSNotification) {
     if let date = date, let nsDate = notification.object as? Date {
-      let mo = moment(nsDate)
+        let mo = moment(date: nsDate)
       if mo.month != date.month || mo.day != date.day {
         selected = false
       }
@@ -73,18 +73,20 @@ class DayView: UIView {
   }
 
   func updateView() {
-    if self.selected {
-      dateLabel.textColor = CalendarView.daySelectedTextColor
-      dateLabel.backgroundColor = CalendarView.daySelectedBackgroundColor
-    } else if isToday {
-      dateLabel.textColor = CalendarView.todayTextColor
-      dateLabel.backgroundColor = CalendarView.todayBackgroundColor
-    } else if isOtherMonth {
-      dateLabel.textColor = CalendarView.otherMonthTextColor
-      dateLabel.backgroundColor = CalendarView.otherMonthBackgroundColor
-    } else {
-      self.dateLabel.textColor = CalendarView.dayTextColor
-      self.dateLabel.backgroundColor = CalendarView.dayBackgroundColor
+    DispatchQueue.main.async {
+        if self.selected {
+            self.dateLabel.textColor = CalendarView.daySelectedTextColor
+            self.dateLabel.backgroundColor = CalendarView.daySelectedBackgroundColor
+        } else if self.isToday {
+            self.dateLabel.textColor = CalendarView.todayTextColor
+            self.dateLabel.backgroundColor = CalendarView.todayBackgroundColor
+        } else if self.isOtherMonth {
+            self.dateLabel.textColor = CalendarView.otherMonthTextColor
+            self.dateLabel.backgroundColor = CalendarView.otherMonthBackgroundColor
+        } else {
+          self.dateLabel.textColor = CalendarView.dayTextColor
+          self.dateLabel.backgroundColor = CalendarView.dayBackgroundColor
+        }
     }
   }
 
@@ -97,8 +99,8 @@ class DayView: UIView {
 public extension Moment {
 
   func toNSDate() -> Date? {
-    let epoch = moment(Date(timeIntervalSince1970: 0))
-    let timeInterval = self.intervalSince(epoch)
+    let epoch = moment(date: Date(timeIntervalSince1970: 0))
+    let timeInterval = self.intervalSince(moment: epoch)
     let date = Date(timeIntervalSince1970: timeInterval.seconds)
     return date
   }
