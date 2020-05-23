@@ -71,9 +71,22 @@ public class CalendarView: UIView {
     set { Appearance.dayFont = newValue }
   }
 
+    ///When this function is set, it is responsible for saying if a date is selected or not. This way, multiple days can be selected at the same time.
+    public var isDateSelected: ((Moment) -> Bool)? {
+        didSet {
+            self.contentView.isDateSelected = self.isDateSelected
+        }
+    }
+    
     public var selectionEnabled: Bool = true {
         didSet {
-            self.contentView.selectionEnabled = self.selectionEnabled
+            self.contentView.months.forEach { month in
+                month.weeks.forEach { week in
+                    week.days.forEach { day in
+                        day.selectionEnabled = self.selectionEnabled
+                    }
+                }
+            }
         }
     }
     

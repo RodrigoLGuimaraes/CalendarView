@@ -17,11 +17,20 @@ class DayView: UIView {
   var date: Moment! {
     didSet {
         dateLabel.text = date.format(dateFormat: "d")
+        self.selected = self.isDateSelected?(date) ?? self.selected
       setNeedsLayout()
     }
   }
     
     var selectionEnabled: Bool = true
+    
+    var isDateSelected: ((Moment) -> Bool)? {
+        didSet {
+            if let isDateSelected = self.isDateSelected {
+                self.selected = isDateSelected(self.date)
+            }
+        }
+    }
     
   lazy var dateLabel: UILabel = {
     let label = UILabel()
@@ -44,12 +53,18 @@ class DayView: UIView {
 
   init() {
     super.init(frame: CGRect.zero)
+    
+    self.dateLabel.layer.cornerRadius = 4
+    self.dateLabel.clipsToBounds = true
+    
     let tap = UITapGestureRecognizer(target: self, action: #selector(selectIt))
     addGestureRecognizer(tap)
     NotificationCenter.default.addObserver(self,
       selector: #selector(onSelected(notification:)),
       name: NSNotification.Name(rawValue: CalendarSelectedDayNotification),
       object: nil)
+    
+    self.selected = self.isDateSelected?(self.date) ?? false
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -67,6 +82,7 @@ class DayView: UIView {
   }
 
   @objc func onSelected(notification: NSNotification) {
+    if self.isDateSelected != nil { return }
     if let date = date, let nsDate = notification.object as? Date {
         let mo = moment(date: nsDate)
       if mo.month != date.month || mo.day != date.day {
