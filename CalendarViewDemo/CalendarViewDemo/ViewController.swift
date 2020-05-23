@@ -11,31 +11,39 @@ import CalendarView
 import SwiftMoment
 
 class ViewController: UIViewController {
-
-  @IBOutlet weak var calendar: CalendarView!
-
-  var date: Moment! {
-    didSet {
-      title = date.format("MMMM d, yyyy")
+    
+    @IBOutlet weak var calendar: CalendarView!
+    
+    var date: Moment! {
+        didSet {
+            DispatchQueue.main.async {
+                self.title = self.date.format(dateFormat: "MMMM")
+            }
+        }
     }
-  }
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    date = moment()
-    calendar.delegate = self
-  }
-
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        date = moment()
+        calendar.selectedDayOnPaged = nil
+        calendar.selectionEnabled = false
+        calendar.isDateSelected = { date in
+            return true
+            
+        }
+        calendar.delegate = self
+    }
+    
 }
 
 extension ViewController: CalendarViewDelegate {
-
-  func calendarDidSelectDate(date: Moment) {
-    self.date = date
-  }
-
-  func calendarDidPageToDate(date: Moment) {
-    self.date = date
-  }
-
+    
+    func calendarDidSelectDate(date: Moment) {
+        self.date = date
+    }
+    
+    func calendarDidPageToDate(date: Moment) {
+        self.date = date
+    }
+    
 }

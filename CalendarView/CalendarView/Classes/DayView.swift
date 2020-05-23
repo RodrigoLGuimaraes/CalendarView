@@ -13,103 +13,132 @@ import SwiftMoment
 let CalendarSelectedDayNotification = "CalendarSelectedDayNotification"
 
 class DayView: UIView {
-
-  var date: Moment! {
-    didSet {
-      dateLabel.text = date.format("d")
-      setNeedsLayout()
+    
+    var date: Moment! {
+        didSet {
+            dateLabel.text = date.format(dateFormat: "d")
+            self.selected = self.isDateSelected?(date) ?? self.selected
+            setNeedsLayout()
+        }
     }
-  }
-  lazy var dateLabel: UILabel = {
-    let label = UILabel()
-    label.textAlignment = .center
-    label.font = CalendarView.dayFont
-    self.addSubview(label)
-    return label
-  }()
-  var isToday: Bool = false
-  var isOtherMonth: Bool = false
-  var selected: Bool = false {
-    didSet {
-      if selected {
-        NotificationCenter.default
-            .post(name: NSNotification.Name(rawValue: CalendarSelectedDayNotification), object: date.toNSDate())
-      }
-      updateView()
+    
+    var selectionEnabled: Bool = true
+    
+    var isDateSelected: ((Moment) -> Bool)? {
+        didSet {
+            if let isDateSelected = self.isDateSelected {
+                self.selected = isDateSelected(self.date)
+            }
+        }
     }
-  }
-
-  init() {
-    super.init(frame: CGRect.zero)
-    let tap = UITapGestureRecognizer(target: self, action: #selector(selectIt))
-    addGestureRecognizer(tap)
-    NotificationCenter.default.addObserver(self,
-      selector: #selector(onSelected(notification:)),
-      name: NSNotification.Name(rawValue: CalendarSelectedDayNotification),
-      object: nil)
-  }
-
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-  }
-
-  override func layoutSubviews() {
-    super.layoutSubviews()
-    dateLabel.frame = bounds.insetBy(dx: 10, dy: 10) //(bounds, 10, 10)
-    updateView()
-  }
-
-  @objc func onSelected(notification: NSNotification) {
-    if let date = date, let nsDate = notification.object as? Date {
-      let mo = moment(nsDate)
-      if mo.month != date.month || mo.day != date.day {
-        selected = false
-      }
+    
+    lazy var dateLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = CalendarView.dayFont
+        self.addSubview(label)
+        return label
+    }()
+    var isToday: Bool = false
+    var isOtherMonth: Bool = false
+    var selected: Bool = false {
+        didSet {
+            if selected {
+                NotificationCenter.default
+                    .post(name: NSNotification.Name(rawValue: CalendarSelectedDayNotification), object: date.toNSDate())
+            }
+            updateView()
+        }
     }
-  }
-
-  func updateView() {
-    if self.selected {
-      dateLabel.textColor = CalendarView.daySelectedTextColor
-      dateLabel.backgroundColor = CalendarView.daySelectedBackgroundColor
-    } else if isToday {
-      dateLabel.textColor = CalendarView.todayTextColor
-      dateLabel.backgroundColor = CalendarView.todayBackgroundColor
-    } else if isOtherMonth {
-      dateLabel.textColor = CalendarView.otherMonthTextColor
-      dateLabel.backgroundColor = CalendarView.otherMonthBackgroundColor
-    } else {
-      self.dateLabel.textColor = CalendarView.dayTextColor
-      self.dateLabel.backgroundColor = CalendarView.dayBackgroundColor
+    
+    init() {
+        super.init(frame: CGRect.zero)
+        
+        self.dateLabel.layer.cornerRadius = 4
+        self.dateLabel.clipsToBounds = true
+        self.dateLabel.layer.borderWidth = 2
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(selectIt))
+        addGestureRecognizer(tap)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onSelected(notification:)),
+                                               name: NSNotification.Name(rawValue: CalendarSelectedDayNotification),
+                                               object: nil)
+        
+        self.selected = self.isDateSelected?(self.date) ?? false
     }
-  }
-
-  @objc func selectIt() {
-    selected = true
-  }
-
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        dateLabel.frame = bounds.insetBy(dx: 10, dy: 10) //(bounds, 10, 10)
+        updateView()
+    }
+    
+    @objc func onSelected(notification: NSNotification) {
+        if self.isDateSelected != nil { return }
+        if let date = date, let nsDate = notification.object as? Date {
+            let mo = moment(date: nsDate)
+            if mo.month != date.month || mo.day != date.day {
+                selected = false
+            }
+        }
+    }
+    
+    func updateView() {
+        DispatchQueue.main.async {
+            if self.isToday {
+                self.dateLabel.layer.borderColor = CalendarView.todayBorderColor.cgColor
+            } else {
+                self.dateLabel.layer.borderColor = UIColor.clear.cgColor
+            }
+            if self.selected {
+                self.dateLabel.textColor = CalendarView.daySelectedTextColor
+                self.dateLabel.backgroundColor = CalendarView.daySelectedBackgroundColor
+            } else if self.isToday {
+                self.dateLabel.textColor = CalendarView.todayTextColor
+                self.dateLabel.backgroundColor = CalendarView.todayBackgroundColor
+                
+            } else if self.isOtherMonth {
+                self.dateLabel.textColor = CalendarView.otherMonthTextColor
+                self.dateLabel.backgroundColor = CalendarView.otherMonthBackgroundColor
+            } else {
+                self.dateLabel.textColor = CalendarView.dayTextColor
+                self.dateLabel.backgroundColor = CalendarView.dayBackgroundColor
+            }
+        }
+    }
+    
+    @objc func selectIt() {
+        guard self.selectionEnabled else { return }
+        selected = true
+    }
+    
 }
 
 public extension Moment {
-
-  func toNSDate() -> Date? {
-    let epoch = moment(Date(timeIntervalSince1970: 0))
-    let timeInterval = self.intervalSince(epoch)
-    let date = Date(timeIntervalSince1970: timeInterval.seconds)
-    return date
-  }
-
-  func isToday() -> Bool {
-    let cal = Calendar.current
-    return cal.isDateInToday(self.toNSDate()!)
-  }
-
-  func isSameMonth(other: Moment) -> Bool {
-    return self.month == other.month && self.year == other.year
-  }
-
+    
+    func toNSDate() -> Date? {
+        let epoch = moment(date: Date(timeIntervalSince1970: 0))
+        let timeInterval = self.intervalSince(moment: epoch)
+        let date = Date(timeIntervalSince1970: timeInterval.seconds)
+        return date
+    }
+    
+    func isToday() -> Bool {
+        let cal = Calendar.current
+        return cal.isDateInToday(self.toNSDate()!)
+    }
+    
+    func isSameMonth(other: Moment) -> Bool {
+        return self.month == other.month && self.year == other.year
+    }
+    
 }
