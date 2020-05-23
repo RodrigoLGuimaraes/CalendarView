@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
 
-    CalendarView.dayFont = UIFont.boldSystemFontOfSize(14)
+    CalendarView.dayFont = UIFont.boldSystemFont(ofSize: 14)
 
     return true
   }

@@ -7,61 +7,61 @@
 //
 
 public func == (lhs: Moment, rhs: Moment) -> Bool {
-    return lhs.isEqualTo(rhs)
+    return lhs.isEqualTo(moment: rhs)
 }
 
 public func != (lhs: Moment, rhs: Moment) -> Bool {
-    return !lhs.isEqualTo(rhs)
+    return !lhs.isEqualTo(moment: rhs)
 }
 
 public func ~= (lhs: Moment, rhs: Moment) -> Bool {
-    return lhs.isCloseTo(rhs)
+    return lhs.isCloseTo(moment: rhs)
 }
 
 public func - (lhs: Moment, rhs: Moment) -> Duration {
-    return lhs.intervalSince(rhs)
+    return lhs.intervalSince(moment: rhs)
 }
 
 public func > (lhs: Moment, rhs: Moment) -> Bool {
-    return lhs.intervalSince(rhs).interval > 0
+    return lhs.intervalSince(moment: rhs).interval > 0
 }
 
 public func < (lhs: Moment, rhs: Moment) -> Bool {
-    return lhs.intervalSince(rhs).interval < 0
+    return lhs.intervalSince(moment: rhs).interval < 0
 }
 
 public func >= (lhs: Moment, rhs: Moment) -> Bool {
-    return lhs.intervalSince(rhs).interval >= 0
+    return lhs.intervalSince(moment: rhs).interval >= 0
 }
 
 public func <= (lhs: Moment, rhs: Moment) -> Bool {
-    return lhs.intervalSince(rhs).interval <= 0
+    return lhs.intervalSince(moment: rhs).interval <= 0
 }
 
 public func + (lhs: Moment, rhs: Duration) -> Moment {
-    return lhs.add(rhs)
+    return lhs.add(duration: rhs)
 }
 
 public func + (lhs: Duration, rhs: Moment) -> Moment {
-    return rhs.add(lhs)
+    return rhs.add(duration: lhs)
 }
 
 public func - (lhs: Moment, rhs: Duration) -> Moment {
-    return lhs.subtract(rhs)
+    return lhs.subtract(duration: rhs)
 }
 
 public func - (lhs: Duration, rhs: Moment) -> Moment {
-    return rhs.subtract(lhs)
+    return rhs.subtract(duration: lhs)
 }
 
 public func == (lhs: Duration, rhs: Duration) -> Bool {
-    return lhs.isEqualTo(rhs)
+    return lhs.isEqualTo(duration: rhs)
 }
 
 public func + (lhs: Duration, rhs: Duration) -> Duration {
-    return lhs.add(rhs)
+    return lhs.add(duration: rhs)
 }
 
 public func - (lhs: Duration, rhs: Duration) -> Duration {
-    return lhs.subtract(rhs)
+    return lhs.subtract(duration: rhs)
 }
